@@ -6,47 +6,105 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         Background="#1e1e1e"
         FontSize="20"
+        Width="1000"
+        Height="640"
+        MinWidth="760"
+        MinHeight="480"
+        WindowStartupLocation="CenterScreen"
         mc:Ignorable="d">
 
-    <Grid HorizontalAlignment="Center" Margin="20">
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
 
-        <StackPanel>
+        <Style x:Key="MenuButtonStyle" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="HorizontalContentAlignment" Value="Left" />
+            <Setter Property="Padding" Value="20,14" />
+            <Setter Property="FontSize" Value="18" />
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#2a2a2a" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
 
-            <Label Content="Enter name for the files" 
-                   FontSize="28" 
-                   Width="600" />
+        <Style x:Key="NavigationButtonStyle" TargetType="Button" BasedOn="{StaticResource MenuButtonStyle}">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                    <Setter Property="Background" Value="#2c2c2c" />
+                </DataTrigger>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#333333" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
 
-            <TextBox TextChanged="FileNameTextBox_TextChanged"
-                     x:Name="FileNameTextBox"
-                     Margin="0 20 0 0" 
-                     Width="600" />
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
 
-            <Label Content="Enter the extension for the file" 
-                   FontSize="28" 
-                   Width="600" />
-            
-            <TextBox TextChanged="ExtensionTextBox_TextChanged"
-                     x:Name="ExtensionTextBox"
-                     Margin="0 20 0 0" 
-                     Text=".jpg"
-                     Width="600" />
+        <Border x:Name="NavigationMenu"
+                Grid.Column="0"
+                Width="240"
+                Background="#161616"
+                BorderBrush="#333333"
+                BorderThickness="0,0,1,0">
+            <DockPanel>
+                <Button DockPanel.Dock="Top"
+                        Command="{Binding ToggleMenuCommand}"
+                        Style="{StaticResource MenuButtonStyle}"
+                        ToolTip="Menu"
+                        Height="56">
+                    <TextBlock Text="&#xE700;"
+                               FontFamily="Segoe MDL2 Assets"
+                               FontSize="18" />
+                </Button>
 
-            <Label Content="Examples:" 
-                   Margin="0 20 0 0" 
-                   Width="600" />
-            
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                <Label x:Name="Examples1" />
-                <Label x:Name="Examples2" Margin="20 0 0 0" />
-                <Label x:Name="Examples3" Margin="20 0 0 0" />
-            </StackPanel>
+                <ItemsControl ItemsSource="{Binding NavigationItems}"
+                              Margin="0,8,0,0">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Button Command="{Binding DataContext.NavigateCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                    CommandParameter="{Binding}"
+                                    Style="{StaticResource NavigationButtonStyle}"
+                                    ToolTip="{Binding Title}">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="{Binding Glyph}"
+                                               FontFamily="Segoe MDL2 Assets"
+                                               FontSize="18"
+                                               Width="24"
+                                               TextAlignment="Center" />
+                                    <TextBlock Text="{Binding Title}"
+                                               Margin="12,0,0,0"
+                                               VerticalAlignment="Center"
+                                               Visibility="{Binding DataContext.IsMenuExpanded, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                                </StackPanel>
+                            </Button>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </DockPanel>
+        </Border>
 
-            <Button Click="SelectFileButton_Click"
-                    Content="Select file directory" 
-                    Margin="0 20 0 0" />
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="56" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
 
-        </StackPanel>
+            <TextBlock Grid.Row="0"
+                       Text="{Binding CurrentTitle}"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       FontSize="28"
+                       Foreground="#2b5ed5" />
 
+            <ContentControl Grid.Row="1"
+                            Content="{Binding CurrentViewModel}" />
+        </Grid>
     </Grid>
-    
+
 </Window>

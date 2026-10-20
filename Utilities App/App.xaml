@@ -2,6 +2,8 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:UtilitiesApp"
+             xmlns:vm="clr-namespace:UtilitiesApp.ViewModels"
+             xmlns:views="clr-namespace:UtilitiesApp.Views"
              StartupUri="MainWindow.xaml">
 
     <Application.Resources>
@@ -44,6 +46,10 @@
             </Style.Triggers>
             
         </Style>
+
+        <DataTemplate DataType="{x:Type vm:RenamerViewModel}">
+            <views:RenamerView />
+        </DataTemplate>
 
     </Application.Resources>
     
