@@ -16,4 +16,8 @@
     <Content Include="Utilities-App-Icon.ico" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="YoutubeDLSharp" Version="1.2.0" />
+  </ItemGroup>
+
 </Project>

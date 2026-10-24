@@ -1,0 +1,192 @@
+<UserControl x:Class="UtilitiesApp.Views.YouTubeView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d">
+
+    <UserControl.Resources>
+        <Style x:Key="LinkItemStyle" TargetType="ListBoxItem">
+            <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="Margin" Value="4,2" />
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListBoxItem">
+                        <Border x:Name="Row"
+                                Background="Transparent"
+                                BorderBrush="Transparent"
+                                BorderThickness="1"
+                                CornerRadius="10"
+                                Padding="12,10"
+                                SnapsToDevicePixels="True">
+                            <ContentPresenter />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Row" Property="Background" Value="{StaticResource SurfaceRaisedBrush}" />
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="Row" Property="Background" Value="{StaticResource AccentSoftBrush}" />
+                            </Trigger>
+                            <Trigger Property="IsKeyboardFocused" Value="True">
+                                <Setter TargetName="Row" Property="BorderBrush" Value="{StaticResource AccentBrush}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="12" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <Grid>
+                <TextBox x:Name="LinkBox"
+                         Text="{Binding LinkText, UpdateSourceTrigger=PropertyChanged}">
+                    <TextBox.InputBindings>
+                        <KeyBinding Key="Enter" Command="{Binding AddCommand}" />
+                    </TextBox.InputBindings>
+                </TextBox>
+                <TextBlock Text="Paste a YouTube link"
+                           Margin="14,0,12,0"
+                           VerticalAlignment="Center"
+                           Foreground="{StaticResource TextMutedBrush}"
+                           IsHitTestVisible="False">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                            <Style.Triggers>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding LinkText}" Value="" />
+                                        <Condition Binding="{Binding IsKeyboardFocused, ElementName=LinkBox}" Value="False" />
+                                    </MultiDataTrigger.Conditions>
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </MultiDataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+            </Grid>
+
+            <Button Grid.Column="2"
+                    Content="Add"
+                    Command="{Binding AddCommand}"
+                    Style="{StaticResource PrimaryButton}"
+                    MinWidth="96" />
+        </Grid>
+
+        <Border Grid.Row="1"
+                Margin="0,16,0,0"
+                MinHeight="240"
+                Background="{StaticResource SurfaceBrush}"
+                BorderBrush="{StaticResource BorderBrush}"
+                BorderThickness="1"
+                CornerRadius="16"
+                Padding="8">
+            <Grid>
+                <ListBox ItemsSource="{Binding Links}"
+                         SelectedItem="{Binding SelectedLink}"
+                         ItemContainerStyle="{StaticResource LinkItemStyle}"
+                         Background="Transparent"
+                         BorderThickness="0">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="{Binding Url}"
+                                           TextTrimming="CharacterEllipsis"
+                                           VerticalAlignment="Center"
+                                           Foreground="{StaticResource TextPrimaryBrush}" />
+                                <Border Grid.Column="1"
+                                        Margin="16,0,0,0"
+                                        Padding="8,3"
+                                        CornerRadius="8"
+                                        VerticalAlignment="Center"
+                                        Background="{Binding Status, Converter={StaticResource StatusBrushConverter}, ConverterParameter=bg}">
+                                    <TextBlock Text="{Binding Status}"
+                                               FontSize="12"
+                                               FontWeight="SemiBold"
+                                               Foreground="{Binding Status, Converter={StaticResource StatusBrushConverter}, ConverterParameter=fg}" />
+                                </Border>
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                    <ListBox.InputBindings>
+                        <KeyBinding Key="Delete" Command="{Binding RemoveCommand}" />
+                    </ListBox.InputBindings>
+                </ListBox>
+
+                <StackPanel VerticalAlignment="Center"
+                            HorizontalAlignment="Center"
+                            Margin="24"
+                            IsHitTestVisible="False"
+                            Visibility="{Binding HasLinks, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
+                    <TextBlock Text="&#xE189;"
+                               FontFamily="Segoe MDL2 Assets"
+                               FontSize="28"
+                               HorizontalAlignment="Center"
+                               Foreground="{StaticResource TextMutedBrush}" />
+                    <TextBlock Text="No songs yet"
+                               Margin="0,12,0,4"
+                               FontSize="16"
+                               FontWeight="SemiBold"
+                               HorizontalAlignment="Center"
+                               Foreground="{StaticResource TextPrimaryBrush}" />
+                    <TextBlock Text="Paste a YouTube link, then click Add."
+                               HorizontalAlignment="Center"
+                               Foreground="{StaticResource TextMutedBrush}" />
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <Grid Grid.Row="2" Margin="0,16,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <StackPanel VerticalAlignment="Center" Margin="4,0,16,0">
+                <TextBlock Text="{Binding LinkCountText}"
+                           FontSize="13"
+                           FontWeight="SemiBold"
+                           Foreground="{StaticResource TextSecondaryBrush}"
+                           Visibility="{Binding HasLinks, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                <TextBlock Text="{Binding Status}"
+                           Margin="0,2,0,0"
+                           Style="{StaticResource HintText}" />
+            </StackPanel>
+
+            <Button Grid.Column="1"
+                    Content="Remove"
+                    Command="{Binding RemoveCommand}"
+                    MinWidth="110"
+                    Margin="0,0,10,0" />
+
+            <Button Grid.Column="2"
+                    Content="Convert to MP3"
+                    Command="{Binding ConvertCommand}"
+                    Style="{StaticResource PrimaryButton}"
+                    MinWidth="150" />
+        </Grid>
+    </Grid>
+
+</UserControl>

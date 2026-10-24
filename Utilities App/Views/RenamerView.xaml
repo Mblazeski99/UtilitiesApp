@@ -5,42 +5,76 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d">
 
-    <Grid>
-        <StackPanel Width="600"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center">
+    <ScrollViewer VerticalScrollBarVisibility="Auto"
+                  HorizontalScrollBarVisibility="Disabled">
+        <Border MaxWidth="680"
+                HorizontalAlignment="Left"
+                Background="{StaticResource SurfaceBrush}"
+                BorderBrush="{StaticResource BorderBrush}"
+                BorderThickness="1"
+                CornerRadius="16"
+                Padding="28">
+            <StackPanel>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2*" />
+                        <ColumnDefinition Width="16" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
 
-            <Label Content="Enter name for the files"
-                   FontSize="28"
-                   Width="600" />
+                    <StackPanel Grid.Column="0">
+                        <TextBlock Text="File name" Style="{StaticResource FieldLabel}" />
+                        <TextBox Text="{Binding FileName, UpdateSourceTrigger=PropertyChanged}" />
+                    </StackPanel>
 
-            <TextBox Text="{Binding FileName, UpdateSourceTrigger=PropertyChanged}"
-                     Margin="0 20 0 0"
-                     Width="600" />
+                    <StackPanel Grid.Column="2">
+                        <TextBlock Text="Extension" Style="{StaticResource FieldLabel}" />
+                        <TextBox Text="{Binding Extension, UpdateSourceTrigger=PropertyChanged}" />
+                    </StackPanel>
+                </Grid>
 
-            <Label Content="Enter the extension for the file"
-                   FontSize="28"
-                   Width="600" />
+                <TextBlock Text="Preview"
+                           Style="{StaticResource FieldLabel}"
+                           Margin="2,22,0,8" />
 
-            <TextBox Text="{Binding Extension, UpdateSourceTrigger=PropertyChanged}"
-                     Margin="0 20 0 0"
-                     Width="600" />
+                <WrapPanel>
+                    <Border Background="{StaticResource SurfaceRaisedBrush}"
+                            BorderBrush="{StaticResource BorderBrush}"
+                            BorderThickness="1"
+                            CornerRadius="8"
+                            Padding="10,6"
+                            Margin="0,0,8,8">
+                        <TextBlock Text="{Binding Example1}" />
+                    </Border>
+                    <Border Background="{StaticResource SurfaceRaisedBrush}"
+                            BorderBrush="{StaticResource BorderBrush}"
+                            BorderThickness="1"
+                            CornerRadius="8"
+                            Padding="10,6"
+                            Margin="0,0,8,8">
+                        <TextBlock Text="{Binding Example2}" />
+                    </Border>
+                    <Border Background="{StaticResource SurfaceRaisedBrush}"
+                            BorderBrush="{StaticResource BorderBrush}"
+                            BorderThickness="1"
+                            CornerRadius="8"
+                            Padding="10,6"
+                            Margin="0,0,8,8">
+                        <TextBlock Text="{Binding Example3}" />
+                    </Border>
+                </WrapPanel>
 
-            <Label Content="Examples:"
-                   Margin="0 20 0 0"
-                   Width="600" />
+                <TextBlock Text="Files in the chosen folder are renamed in place, starting at 1."
+                           Style="{StaticResource HintText}"
+                           Margin="2,4,0,0" />
 
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                <Label Content="{Binding Example1}" />
-                <Label Content="{Binding Example2}" Margin="20 0 0 0" />
-                <Label Content="{Binding Example3}" Margin="20 0 0 0" />
+                <Button Content="Choose folder and rename"
+                        Command="{Binding SelectFolderCommand}"
+                        Style="{StaticResource PrimaryButton}"
+                        HorizontalAlignment="Left"
+                        Margin="0,22,0,0" />
             </StackPanel>
-
-            <Button Command="{Binding SelectFolderCommand}"
-                    Content="Select file directory"
-                    Margin="0 20 0 0" />
-
-        </StackPanel>
-    </Grid>
+        </Border>
+    </ScrollViewer>
 
 </UserControl>

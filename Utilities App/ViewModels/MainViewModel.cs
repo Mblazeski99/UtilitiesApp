@@ -9,15 +9,27 @@ namespace UtilitiesApp.ViewModels
         private readonly ObservableCollection<NavigationItem> _navigationItems = [];
         private bool _isMenuExpanded = true;
         private string _currentTitle = "";
+        private string _currentDescription = "";
+        private string _currentGlyph = "";
         private object? _currentViewModel;
 
-        public MainViewModel(FileRenamer fileRenamer, IDialogService dialogService)
+        public MainViewModel(FileRenamer fileRenamer, IDialogService dialogService, YouTubeDownloader youTubeDownloader)
         {
             ToggleMenuCommand = new RelayCommand(ToggleMenu);
             NavigateCommand = new RelayCommand(Navigate);
 
-            var renamer = new NavigationItem("Renamer", "\uE8AC", new RenamerViewModel(fileRenamer, dialogService));
+            var renamer = new NavigationItem(
+                "Renamer",
+                "Number and rename every file in a folder.",
+                "\uE8AC",
+                new RenamerViewModel(fileRenamer, dialogService));
+            var youtube = new NavigationItem(
+                "YouTube to MP3",
+                "Turn YouTube songs into MP3 files.",
+                "\uE189",
+                new YouTubeViewModel(youTubeDownloader, dialogService));
             _navigationItems.Add(renamer);
+            _navigationItems.Add(youtube);
             Navigate(renamer);
         }
 
@@ -31,6 +43,18 @@ namespace UtilitiesApp.ViewModels
         {
             get => _currentTitle;
             private set => SetProperty(ref _currentTitle, value);
+        }
+
+        public string CurrentDescription
+        {
+            get => _currentDescription;
+            private set => SetProperty(ref _currentDescription, value);
+        }
+
+        public string CurrentGlyph
+        {
+            get => _currentGlyph;
+            private set => SetProperty(ref _currentGlyph, value);
         }
 
         public object? CurrentViewModel
@@ -63,6 +87,8 @@ namespace UtilitiesApp.ViewModels
             }
 
             CurrentTitle = item.Title;
+            CurrentDescription = item.Description;
+            CurrentGlyph = item.Glyph;
             CurrentViewModel = item.ViewModel;
         }
     }

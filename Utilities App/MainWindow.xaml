@@ -4,39 +4,110 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        Background="#1e1e1e"
-        FontSize="20"
-        Width="1000"
-        Height="640"
-        MinWidth="760"
-        MinHeight="480"
+        Background="{StaticResource BackgroundBrush}"
+        Foreground="{StaticResource TextPrimaryBrush}"
+        FontFamily="Segoe UI"
+        FontSize="14"
+        Width="1120"
+        Height="740"
+        MinWidth="920"
+        MinHeight="640"
         WindowStartupLocation="CenterScreen"
+        UseLayoutRounding="True"
+        SnapsToDevicePixels="True"
+        TextOptions.TextFormattingMode="Display"
         mc:Ignorable="d">
 
     <Window.Resources>
-        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-
-        <Style x:Key="MenuButtonStyle" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+        <Style x:Key="SidebarButtonStyle" TargetType="Button">
             <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}" />
+            <Setter Property="BorderThickness" Value="0" />
             <Setter Property="HorizontalContentAlignment" Value="Left" />
-            <Setter Property="Padding" Value="20,14" />
-            <Setter Property="FontSize" Value="18" />
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#2a2a2a" />
-                </Trigger>
-            </Style.Triggers>
+            <Setter Property="Padding" Value="12,10" />
+            <Setter Property="MinHeight" Value="40" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Root"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="Transparent"
+                                BorderThickness="1"
+                                CornerRadius="10"
+                                Padding="{TemplateBinding Padding}"
+                                SnapsToDevicePixels="True">
+                            <ContentPresenter VerticalAlignment="Center"
+                                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              RecognizesAccessKey="True" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Root" Property="Background" Value="{StaticResource SurfaceRaisedBrush}" />
+                                <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="Root" Property="Background" Value="{StaticResource SurfaceBrush}" />
+                            </Trigger>
+                            <Trigger Property="IsKeyboardFocused" Value="True">
+                                <Setter TargetName="Root" Property="BorderBrush" Value="{StaticResource AccentBrush}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
 
-        <Style x:Key="NavigationButtonStyle" TargetType="Button" BasedOn="{StaticResource MenuButtonStyle}">
-            <Style.Triggers>
-                <DataTrigger Binding="{Binding IsSelected}" Value="True">
-                    <Setter Property="Background" Value="#2c2c2c" />
-                </DataTrigger>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#333333" />
-                </Trigger>
-            </Style.Triggers>
+        <Style x:Key="NavButtonStyle" TargetType="Button" BasedOn="{StaticResource SidebarButtonStyle}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Root"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="Transparent"
+                                BorderThickness="1"
+                                CornerRadius="10"
+                                Padding="{TemplateBinding Padding}"
+                                SnapsToDevicePixels="True">
+                            <Grid>
+                                <Border x:Name="Indicator"
+                                        Width="3"
+                                        HorizontalAlignment="Left"
+                                        Margin="-4,4,0,4"
+                                        CornerRadius="2"
+                                        Background="Transparent" />
+                                <ContentPresenter VerticalAlignment="Center"
+                                                  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                  RecognizesAccessKey="True" />
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Root" Property="Background" Value="{StaticResource SurfaceRaisedBrush}" />
+                                <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
+                            </Trigger>
+                            <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                                <Setter TargetName="Root" Property="Background" Value="{StaticResource AccentSoftBrush}" />
+                                <Setter TargetName="Indicator" Property="Background" Value="{StaticResource AccentBrush}" />
+                                <Setter Property="Foreground" Value="{StaticResource AccentBrush}" />
+                            </DataTrigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding IsSelected}" Value="True" />
+                                    <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Self}}" Value="True" />
+                                </MultiDataTrigger.Conditions>
+                                <Setter TargetName="Root" Property="Background" Value="#2A3A68" />
+                                <Setter Property="Foreground" Value="{StaticResource AccentHoverBrush}" />
+                            </MultiDataTrigger>
+                            <Trigger Property="IsKeyboardFocused" Value="True">
+                                <Setter TargetName="Root" Property="BorderBrush" Value="{StaticResource AccentBrush}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
     </Window.Resources>
 
@@ -48,35 +119,86 @@
 
         <Border x:Name="NavigationMenu"
                 Grid.Column="0"
-                Width="240"
-                Background="#161616"
-                BorderBrush="#333333"
-                BorderThickness="0,0,1,0">
+                Width="252"
+                Background="{StaticResource SidebarBrush}"
+                BorderBrush="{StaticResource BorderBrush}"
+                BorderThickness="0,0,1,0"
+                ClipToBounds="True">
             <DockPanel>
-                <Button DockPanel.Dock="Top"
+                <Button DockPanel.Dock="Bottom"
                         Command="{Binding ToggleMenuCommand}"
-                        Style="{StaticResource MenuButtonStyle}"
-                        ToolTip="Menu"
-                        Height="56">
-                    <TextBlock Text="&#xE700;"
-                               FontFamily="Segoe MDL2 Assets"
-                               FontSize="18" />
+                        Style="{StaticResource SidebarButtonStyle}"
+                        ToolTip="Toggle menu"
+                        Margin="10,8,10,16">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="&#xE700;"
+                                   FontFamily="Segoe MDL2 Assets"
+                                   FontSize="15"
+                                   Width="20"
+                                   TextAlignment="Center"
+                                   VerticalAlignment="Center" />
+                        <TextBlock Text="Collapse"
+                                   Margin="12,0,0,0"
+                                   VerticalAlignment="Center"
+                                   Visibility="{Binding IsMenuExpanded, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                    </StackPanel>
                 </Button>
 
+                <Grid DockPanel.Dock="Top" Margin="16,20,16,8">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Border Width="36"
+                            Height="36"
+                            CornerRadius="10"
+                            Background="{StaticResource AccentBrush}">
+                        <TextBlock Text="U"
+                                   FontSize="16"
+                                   FontWeight="SemiBold"
+                                   Foreground="White"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center" />
+                    </Border>
+                    <StackPanel Grid.Column="1"
+                                Margin="12,0,0,0"
+                                VerticalAlignment="Center"
+                                Visibility="{Binding IsMenuExpanded, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <TextBlock Text="Utilities"
+                                   FontSize="15"
+                                   FontWeight="SemiBold"
+                                   Foreground="{StaticResource TextPrimaryBrush}" />
+                        <TextBlock Text="Desktop tools"
+                                   Margin="0,1,0,0"
+                                   FontSize="12"
+                                   Foreground="{StaticResource TextMutedBrush}" />
+                    </StackPanel>
+                </Grid>
+
+                <TextBlock DockPanel.Dock="Top"
+                           Text="TOOLS"
+                           Margin="22,16,0,8"
+                           FontSize="11"
+                           FontWeight="SemiBold"
+                           Foreground="{StaticResource TextMutedBrush}"
+                           Visibility="{Binding IsMenuExpanded, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
                 <ItemsControl ItemsSource="{Binding NavigationItems}"
-                              Margin="0,8,0,0">
+                              Margin="10,0,10,0">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <Button Command="{Binding DataContext.NavigateCommand, RelativeSource={RelativeSource AncestorType=Window}}"
                                     CommandParameter="{Binding}"
-                                    Style="{StaticResource NavigationButtonStyle}"
+                                    Style="{StaticResource NavButtonStyle}"
+                                    Margin="0,2"
                                     ToolTip="{Binding Title}">
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Text="{Binding Glyph}"
                                                FontFamily="Segoe MDL2 Assets"
-                                               FontSize="18"
-                                               Width="24"
-                                               TextAlignment="Center" />
+                                               FontSize="15"
+                                               Width="20"
+                                               TextAlignment="Center"
+                                               VerticalAlignment="Center" />
                                     <TextBlock Text="{Binding Title}"
                                                Margin="12,0,0,0"
                                                VerticalAlignment="Center"
@@ -91,18 +213,42 @@
 
         <Grid Grid.Column="1">
             <Grid.RowDefinitions>
-                <RowDefinition Height="56" />
+                <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
-            <TextBlock Grid.Row="0"
-                       Text="{Binding CurrentTitle}"
-                       HorizontalAlignment="Center"
-                       VerticalAlignment="Center"
-                       FontSize="28"
-                       Foreground="#2b5ed5" />
+            <Border Grid.Row="0"
+                    Padding="32,22,32,18"
+                    BorderBrush="{StaticResource BorderBrush}"
+                    BorderThickness="0,0,0,1">
+                <StackPanel Orientation="Horizontal">
+                    <Border Width="42"
+                            Height="42"
+                            CornerRadius="12"
+                            Background="{StaticResource AccentSoftBrush}">
+                        <TextBlock Text="{Binding CurrentGlyph}"
+                                   FontFamily="Segoe MDL2 Assets"
+                                   FontSize="18"
+                                   Foreground="{StaticResource AccentBrush}"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center" />
+                    </Border>
+                    <StackPanel Margin="14,0,0,0" VerticalAlignment="Center">
+                        <TextBlock Text="{Binding CurrentTitle}"
+                                   FontSize="22"
+                                   FontWeight="SemiBold"
+                                   Foreground="{StaticResource TextPrimaryBrush}" />
+                        <TextBlock Text="{Binding CurrentDescription}"
+                                   Margin="0,2,0,0"
+                                   Foreground="{StaticResource TextSecondaryBrush}" />
+                    </StackPanel>
+                </StackPanel>
+            </Border>
 
             <ContentControl Grid.Row="1"
+                            Margin="32,24,32,28"
+                            HorizontalContentAlignment="Stretch"
+                            VerticalContentAlignment="Stretch"
                             Content="{Binding CurrentViewModel}" />
         </Grid>
     </Grid>
